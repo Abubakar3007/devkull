@@ -231,8 +231,8 @@ function Field({
   label: string;
   required?: boolean;
   children: React.ReactNode;
-  className?: string;
-  error?: string;
+  className?: string | undefined;
+  error?: string | undefined;
 }) {
   return (
     <div className={className}>
