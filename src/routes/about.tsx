@@ -18,10 +18,10 @@ export const Route = createFileRoute("/about")({
           "A technology services company focused on Salesforce customization, integration and automation.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/about" },
+      { property: "og:url", content: "https://devkull-connect.lovable.app/about" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/about" }],
+    links: [{ rel: "canonical", href: "https://devkull-connect.lovable.app/about" }],
   }),
   component: AboutPage,
 });

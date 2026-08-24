@@ -18,10 +18,10 @@ export const Route = createFileRoute("/privacy")({
         content: "How Devkull handles information submitted through this website.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/privacy" },
+      { property: "og:url", content: "https://devkull-connect.lovable.app/privacy" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/privacy" }],
+    links: [{ rel: "canonical", href: "https://devkull-connect.lovable.app/privacy" }],
   }),
   component: PrivacyPage,
 });

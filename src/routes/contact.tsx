@@ -17,10 +17,10 @@ export const Route = createFileRoute("/contact")({
         content: "Talk to Devkull about Salesforce customization, integration and automation.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/contact" },
+      { property: "og:url", content: "https://devkull-connect.lovable.app/contact" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/contact" }],
+    links: [{ rel: "canonical", href: "https://devkull-connect.lovable.app/contact" }],
   }),
   component: ContactPage,
 });

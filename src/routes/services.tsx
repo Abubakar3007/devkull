@@ -18,10 +18,10 @@ export const Route = createFileRoute("/services")({
           "Salesforce customization, integration, automation and e-commerce integration services built around your business.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/services" },
+      { property: "og:url", content: "https://devkull-connect.lovable.app/services" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/services" }],
+    links: [{ rel: "canonical", href: "https://devkull-connect.lovable.app/services" }],
   }),
   component: ServicesPage,
 });

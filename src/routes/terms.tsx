@@ -18,10 +18,10 @@ export const Route = createFileRoute("/terms")({
         content: "Terms that apply to the Devkull website and enquiries submitted through it.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/terms" },
+      { property: "og:url", content: "https://devkull-connect.lovable.app/terms" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/terms" }],
+    links: [{ rel: "canonical", href: "https://devkull-connect.lovable.app/terms" }],
   }),
   component: TermsPage,
 });

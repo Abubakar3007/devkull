@@ -24,10 +24,10 @@ export const Route = createFileRoute("/integrations")({
           "Salesforce integrations for WooCommerce, Magento, PrestaShop, OpenCart, WordPress and custom platforms.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/integrations" },
+      { property: "og:url", content: "https://devkull-connect.lovable.app/integrations" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/integrations" }],
+    links: [{ rel: "canonical", href: "https://devkull-connect.lovable.app/integrations" }],
   }),
   component: IntegrationsPage,
 });
