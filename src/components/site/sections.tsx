@@ -44,9 +44,12 @@ const icons = {
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-28">
+    <section className="relative overflow-hidden bg-[image:var(--gradient-wash)] pt-32 pb-20 sm:pt-40 sm:pb-28">
       <div className="bg-grid pointer-events-none absolute inset-0 opacity-40 [mask-image:radial-gradient(75%_60%_at_50%_0%,black,transparent)]" />
-      <div className="pointer-events-none absolute -top-56 -left-32 size-[46rem] rounded-full bg-[image:var(--gradient-brand)] opacity-20 blur-[140px]" />
+      <div className="pointer-events-none absolute -top-56 -left-32 size-[46rem] rounded-full bg-[image:var(--gradient-brand)] opacity-[0.12] blur-[140px]" />
+      <div className="pointer-events-none absolute -right-40 -bottom-52 size-[36rem] rounded-full bg-[image:var(--gradient-brand)] opacity-[0.08] blur-[130px]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-linear-to-b from-transparent to-background" />
+
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-5 sm:px-8 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
         <div>
