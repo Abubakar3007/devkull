@@ -1,24 +1,81 @@
 import { createFileRoute } from "@tanstack/react-router";
+import {
+  About,
+  ContactSection,
+  CoreServices,
+  EcommerceEcosystem,
+  FinalCta,
+  Hero,
+  Industries,
+  Process,
+  SalesforceGrid,
+  Solutions,
+  TechStack,
+  TrustStrip,
+  UseCases,
+  WhyDevkull,
+} from "@/components/site/sections";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+const TITLE = "Devkull | Salesforce Customization & Integration Services";
+const DESCRIPTION =
+  "Devkull delivers Salesforce customization, automation, API and e-commerce integration services — connecting Salesforce with WooCommerce, WordPress, Magento, PrestaShop and OpenCart.";
+
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: TITLE },
+      { name: "description", content: DESCRIPTION },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "/" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: "/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ProfessionalService",
+          name: "Devkull",
+          description: DESCRIPTION,
+          email: "info@devkull.in",
+          areaServed: "Worldwide",
+          serviceType: [
+            "Salesforce integration services",
+            "Salesforce customization services",
+            "Salesforce consulting",
+            "Salesforce e-commerce integration",
+            "Salesforce API integration",
+            "Salesforce automation services",
+            "Salesforce development services",
+            "Salesforce data migration",
+          ],
+        }),
+      },
+    ],
+  }),
+  component: Home,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Home() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <>
+      <Hero />
+      <TrustStrip />
+      <CoreServices />
+      <SalesforceGrid />
+      <EcommerceEcosystem />
+      <Process />
+      <UseCases />
+      <WhyDevkull />
+      <Industries />
+      <TechStack />
+      <Solutions />
+      <About />
+      <ContactSection />
+      <FinalCta />
+    </>
   );
 }
