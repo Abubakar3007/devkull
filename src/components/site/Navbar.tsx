@@ -20,17 +20,25 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+        "fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,border-color,backdrop-filter] duration-500",
         scrolled
-          ? "border-b border-border bg-background/85 backdrop-blur-xl"
-          : "border-b border-transparent",
+          ? "border-b border-border bg-background/80 shadow-[0_1px_0_0_var(--color-border),0_10px_30px_-24px_oklch(0.28_0.05_258/0.5)] backdrop-blur-xl"
+          : "border-b border-transparent bg-background/40",
       )}
     >
       <nav
         aria-label="Main"
-        className="mx-auto flex h-18 max-w-7xl items-center justify-between gap-6 px-5 py-4 sm:px-8"
+        className={cn(
+          "mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 transition-[height] duration-500 sm:px-8",
+          scrolled ? "h-16" : "h-20",
+        )}
       >
-        <Link to="/" aria-label="Devkull home" onClick={() => setOpen(false)}>
+        <Link
+          to="/"
+          aria-label="Devkull home"
+          onClick={() => setOpen(false)}
+          className="transition-transform duration-300 hover:scale-[1.03]"
+        >
           <Logo />
         </Link>
 
@@ -40,8 +48,8 @@ export function Navbar() {
               <Link
                 to={link.to}
                 activeOptions={{ exact: link.to === "/" }}
-                activeProps={{ className: "text-foreground bg-secondary/70" }}
-                className="rounded-full px-3.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/60 hover:text-foreground"
+                activeProps={{ className: "!text-brand after:!scale-x-100" }}
+                className="link-underline relative rounded-full px-3.5 py-2 text-sm font-medium text-muted-foreground transition-colors duration-300 hover:text-brand"
               >
                 {link.label}
               </Link>
@@ -63,7 +71,7 @@ export function Navbar() {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label={open ? "Close menu" : "Open menu"}
-          className="grid size-10 place-items-center rounded-xl border border-border bg-secondary/50 text-foreground transition-colors hover:bg-secondary lg:hidden"
+          className="grid size-11 place-items-center rounded-xl border border-border bg-secondary/60 text-foreground transition-all duration-300 hover:border-brand/40 hover:text-brand active:scale-95 lg:hidden"
         >
           {open ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
@@ -71,19 +79,26 @@ export function Navbar() {
 
       <div
         className={cn(
-          "overflow-hidden border-t border-border bg-background/95 backdrop-blur-xl transition-[max-height,opacity] duration-300 lg:hidden",
-          open ? "max-h-[32rem] opacity-100" : "max-h-0 opacity-0",
+          "overflow-hidden border-t border-border bg-background/95 backdrop-blur-xl transition-[max-height,opacity] duration-400 ease-out lg:hidden",
+          open ? "max-h-[34rem] opacity-100" : "max-h-0 opacity-0",
         )}
       >
         <ul className="mx-auto flex max-w-7xl flex-col gap-1 px-5 py-4 sm:px-8">
-          {navLinks.map((link) => (
-            <li key={link.to}>
+          {navLinks.map((link, i) => (
+            <li
+              key={link.to}
+              className={cn(
+                "transition-all duration-400 ease-out",
+                open ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0",
+              )}
+              style={{ transitionDelay: open ? `${60 + i * 45}ms` : "0ms" }}
+            >
               <Link
                 to={link.to}
                 onClick={() => setOpen(false)}
                 activeOptions={{ exact: link.to === "/" }}
-                activeProps={{ className: "text-foreground" }}
-                className="block rounded-xl px-3 py-3 text-[0.95rem] font-medium text-muted-foreground transition-colors hover:bg-secondary/60 hover:text-foreground"
+                activeProps={{ className: "text-brand bg-accent/70" }}
+                className="block rounded-xl px-3 py-3 text-[0.95rem] font-medium text-muted-foreground transition-colors hover:bg-accent/60 hover:text-brand"
               >
                 {link.label}
               </Link>

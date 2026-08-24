@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { ArrowRight, Check, Loader2 } from "lucide-react";
 import { submitContact } from "@/lib/contact.functions";
 import { serviceOptions, platformOptions, CONTACT_EMAIL } from "./data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 const initial = {
   fullName: "",
@@ -18,23 +19,61 @@ const initial = {
   message: "",
 };
 
+type Values = typeof initial;
+type Errors = Partial<Record<keyof Values, string>>;
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+function validate(values: Values): Errors {
+  const errors: Errors = {};
+  if (!values.fullName.trim()) errors.fullName = "This field is required.";
+  if (!values.email.trim()) errors.email = "This field is required.";
+  else if (!EMAIL_RE.test(values.email.trim()))
+    errors.email = "Please enter a valid email address.";
+  if (!values.message.trim()) errors.message = "This field is required.";
+  else if (values.message.trim().length < 10)
+    errors.message = "Please add a little more detail (at least 10 characters).";
+  return errors;
+}
+
+const fieldClass =
+  "transition-all duration-300 focus-visible:border-brand focus-visible:ring-4 focus-visible:ring-brand/15";
+
 export function ContactForm() {
   const send = useServerFn(submitContact);
-  const [values, setValues] = useState(initial);
+  const [values, setValues] = useState<Values>(initial);
+  const [errors, setErrors] = useState<Errors>({});
+  const [touched, setTouched] = useState<Partial<Record<keyof Values, boolean>>>({});
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState<string | null>(null);
 
-  const set = (key: keyof typeof initial) => (value: string) =>
-    setValues((prev) => ({ ...prev, [key]: value }));
+  const set = (key: keyof Values) => (value: string) => {
+    setValues((prev) => {
+      const next = { ...prev, [key]: value };
+      if (touched[key]) setErrors(validate(next));
+      return next;
+    });
+  };
+
+  const blur = (key: keyof Values) => () => {
+    setTouched((prev) => ({ ...prev, [key]: true }));
+    setErrors(validate(values));
+  };
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const found = validate(values);
+    setErrors(found);
+    setTouched({ fullName: true, email: true, message: true });
+    if (Object.keys(found).length > 0) return;
+
     setError(null);
     setStatus("sending");
     try {
       await send({ data: values });
       setStatus("sent");
       setValues(initial);
+      setTouched({});
     } catch (err) {
       setStatus("idle");
       setError(
@@ -47,48 +86,54 @@ export function ContactForm() {
 
   if (status === "sent") {
     return (
-      <div className="card-surface flex flex-col items-start gap-4 p-8 sm:p-10">
-        <span className="grid size-12 place-items-center rounded-2xl bg-brand/15 text-brand">
-          <CheckCircle2 className="size-6" />
+      <div className="card-surface animate-rise flex flex-col items-start gap-4 p-8 hover:!translate-y-0 sm:p-10">
+        <span className="grid size-14 place-items-center rounded-2xl bg-brand/12 text-brand [animation:dk-rise_0.6s_var(--ease-premium)_0.1s_both]">
+          <Check className="size-7" strokeWidth={3} />
         </span>
-        <h3 className="text-2xl font-semibold">Thank you — your enquiry has been received.</h3>
+        <h3 className="text-2xl font-semibold">Thanks for reaching out.</h3>
         <p className="text-muted-foreground">
-          A member of the Devkull team will review your requirement and reply to your work email.
-          You can also reach us directly at{" "}
-          <a className="text-brand-soft underline-offset-4 hover:underline" href={`mailto:${CONTACT_EMAIL}`}>
+          Our team will review your inquiry and get back to you. You can also reach us directly at{" "}
+          <a
+            className="font-medium text-brand underline-offset-4 hover:underline"
+            href={`mailto:${CONTACT_EMAIL}`}
+          >
             {CONTACT_EMAIL}
           </a>
           .
         </p>
         <Button variant="outline" className="rounded-full" onClick={() => setStatus("idle")}>
-          Send another enquiry
+          Send another inquiry
         </Button>
       </div>
     );
   }
 
   return (
-    <form onSubmit={onSubmit} className="card-surface hover:!translate-y-0 p-6 sm:p-8">
+    <form onSubmit={onSubmit} noValidate className="card-surface p-6 hover:!translate-y-0 sm:p-8">
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field id="fullName" label="Full Name" required>
+        <Field id="fullName" label="Full Name" required error={errors.fullName}>
           <Input
             id="fullName"
-            required
             autoComplete="name"
             value={values.fullName}
             onChange={(e) => set("fullName")(e.target.value)}
+            onBlur={blur("fullName")}
+            aria-invalid={Boolean(errors.fullName)}
             placeholder="Jane Doe"
+            className={fieldClass}
           />
         </Field>
-        <Field id="email" label="Work Email" required>
+        <Field id="email" label="Work Email" required error={errors.email}>
           <Input
             id="email"
             type="email"
-            required
             autoComplete="email"
             value={values.email}
             onChange={(e) => set("email")(e.target.value)}
+            onBlur={blur("email")}
+            aria-invalid={Boolean(errors.email)}
             placeholder="jane@company.com"
+            className={fieldClass}
           />
         </Field>
         <Field id="company" label="Company">
@@ -98,6 +143,7 @@ export function ContactForm() {
             value={values.company}
             onChange={(e) => set("company")(e.target.value)}
             placeholder="Company name"
+            className={fieldClass}
           />
         </Field>
         <Field id="phone" label="Phone Number">
@@ -108,6 +154,7 @@ export function ContactForm() {
             value={values.phone}
             onChange={(e) => set("phone")(e.target.value)}
             placeholder="+91 00000 00000"
+            className={fieldClass}
           />
         </Field>
         <Field id="service" label="Service Required" required>
@@ -126,20 +173,28 @@ export function ContactForm() {
             options={platformOptions}
           />
         </Field>
-        <Field id="message" label="Message" required className="sm:col-span-2">
+        <Field
+          id="message"
+          label="Message"
+          required
+          error={errors.message}
+          className="sm:col-span-2"
+        >
           <Textarea
             id="message"
-            required
             rows={5}
             value={values.message}
             onChange={(e) => set("message")(e.target.value)}
+            onBlur={blur("message")}
+            aria-invalid={Boolean(errors.message)}
             placeholder="Tell us what you're trying to connect, automate or customize."
+            className={fieldClass}
           />
         </Field>
       </div>
 
       {error ? (
-        <p role="alert" className="mt-4 text-sm text-destructive">
+        <p role="alert" className="animate-rise mt-4 text-sm text-destructive">
           {error}
         </p>
       ) : null}
@@ -151,11 +206,13 @@ export function ContactForm() {
               <Loader2 className="size-4 animate-spin" /> Sending…
             </>
           ) : (
-            "Send Inquiry"
+            <>
+              Send Inquiry <ArrowRight className="size-4" />
+            </>
           )}
         </Button>
         <p className="text-xs text-muted-foreground">
-          Your enquiry is delivered to {CONTACT_EMAIL}.
+          Your inquiry is delivered to {CONTACT_EMAIL}.
         </p>
       </div>
     </form>
@@ -168,12 +225,14 @@ function Field({
   required,
   children,
   className,
+  error,
 }: {
   id: string;
   label: string;
   required?: boolean;
   children: React.ReactNode;
-  className?: string;
+  className?: string | undefined;
+  error?: string | undefined;
 }) {
   return (
     <div className={className}>
@@ -182,6 +241,15 @@ function Field({
         {required ? <span className="text-brand"> *</span> : null}
       </Label>
       {children}
+      <p
+        className={cn(
+          "overflow-hidden text-xs text-destructive transition-all duration-300",
+          error ? "mt-1.5 max-h-8 opacity-100" : "max-h-0 opacity-0",
+        )}
+        aria-live="polite"
+      >
+        {error}
+      </p>
     </div>
   );
 }
@@ -202,7 +270,7 @@ function NativeSelect({
       id={id}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 md:text-sm"
+      className="h-9 w-full cursor-pointer rounded-md border border-input bg-transparent px-3 py-1 text-base transition-all duration-300 outline-none focus-visible:border-brand focus-visible:ring-4 focus-visible:ring-brand/15 md:text-sm"
     >
       {options.map((option) => (
         <option key={option} value={option} className="bg-popover text-popover-foreground">
