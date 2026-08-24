@@ -18,10 +18,10 @@ export const Route = createFileRoute("/salesforce")({
           "Configure, customize and extend Salesforce around your business processes with Devkull.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/salesforce" },
+      { property: "og:url", content: "https://devkull-connect.lovable.app/salesforce" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/salesforce" }],
+    links: [{ rel: "canonical", href: "https://devkull-connect.lovable.app/salesforce" }],
   }),
   component: SalesforcePage,
 });
